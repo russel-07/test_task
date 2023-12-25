@@ -37,8 +37,3 @@ def merge(arr_1, arr_2):
                 else:
                     j += 1
     return arr
-
-
-a = [1234,1423,75453,234567,6542,43,87,45,87]
-
-print(mergesort(a))
