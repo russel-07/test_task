@@ -1,42 +1,42 @@
 class ArrayRingBuffer:
 
     def __init__(self, size):
-        self.size = size
-        self.first = 0
-        self.last = 0
-        self.count = 0
         self.buffer = [None for _ in range(size)]
+        self.max_size = size
+        self.head = 0
+        self.tail = 0
+        self.current_size = 0
 
     def is_empty(self):
-        return self.count == 0
+        return self.current_size == 0
 
     def is_full(self):
-        return self.count == self.size
+        return self.current_size == self.max_size
 
-    def add(self, value):
+    def put(self, value):
         if self.is_full():
             return 'Buffer is full'
-        else:
-            self.buffer[self.last] = value
-            self.count += 1
-            self.last = (self.last + 1) % self.size
+            # raise ValueError('Buffer is full')
+        self.buffer[self.tail] = value
+        self.current_size += 1
+        self.tail = (self.tail + 1) % self.max_size
 
-    def push(self):
+    def get(self):
         if self.is_empty():
             return 'Buffer is empty'
-        else:
-            value = self.buffer[self.first]
-            self.buffer[self.first] = None
-            self.count -= 1
-            self.first = (self.first + 1) % self.size
-            return value
+            # raise ValueError('Buffer is empty')
+        value = self.buffer[self.head]
+        self.buffer[self.head] = None
+        self.head = (self.head + 1) % self.max_size
+        self.current_size -= 1
+        return value
 
         
 class LinkedListRingBuffer:
 
     class Node:
 
-        def __init__(self, value=None, next=None):
+        def __init__(self, value, next=None):
             self.value = value
             self.next = next
     
@@ -47,7 +47,7 @@ class LinkedListRingBuffer:
     def is_empty(self):
         return self.head is None
 
-    def add(self, value):
+    def put(self, value):
         if self.is_empty():
             self.head = self.Node(value)
             self.tail = self.head
@@ -55,11 +55,10 @@ class LinkedListRingBuffer:
             self.tail.next = self.Node(value)
             self.tail = self.tail.next
 
-    def push(self):
+    def get(self):
         if self.is_empty():
             return 'Buffer is empty'
-        else:
-            value = self.head.value
-            self.head = self.head.next
-            return value
-
+            # raise ValueError('Buffer is empty')
+        value = self.head.value
+        self.head = self.head.next
+        return value
